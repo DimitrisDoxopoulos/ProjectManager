@@ -5,6 +5,7 @@ using ContactsAPI.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using System.Web.Http;
 
 namespace ContactsAPI
 {
@@ -15,7 +16,6 @@ namespace ContactsAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -23,6 +23,18 @@ namespace ContactsAPI
             var connString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<ContactsAppContext>(options => options.UseSqlServer(connString));
             builder.Services.AddAutoMapper(typeof(MapperConfiguration));
+
+            var MyAllowedOrigins = "_myAllowedOrigins";
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(
+                    name: MyAllowedOrigins,
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+                    }
+                );
+            });
 
             // Add IUnitOfWork and UnitOfWork
             builder.Services.AddRepositories();
@@ -46,6 +58,8 @@ namespace ContactsAPI
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors(MyAllowedOrigins);
 
             app.UseAuthentication();
             app.UseAuthorization();
