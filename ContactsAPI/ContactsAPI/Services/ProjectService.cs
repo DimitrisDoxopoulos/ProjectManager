@@ -30,6 +30,12 @@ namespace ContactsAPI.Services
             return projects;
         }
 
+        public async Task<IEnumerable<Project>> GetAllProjectsOfUserAsync(int userId)
+        {
+            List<Project> projects = (List<Project>)await _unitOfWork.ProjectRepository.GetAllProjectsOfUserAsync(userId);
+            return projects;
+        }
+
         public async Task<Project> GetProject(int id)
         {
             var project = await _unitOfWork.ProjectRepository.GetProjectAsync(id);
@@ -37,16 +43,24 @@ namespace ContactsAPI.Services
             return project;
         }
 
-        public async Task InsertProjectAsync(ProjectDTO request)
+        public async Task<Project> GetProjectBySlugAsync(string slug)
         {
-            await _unitOfWork.ProjectRepository.InsertProjectAsync(request);
+            var project = await _unitOfWork.ProjectRepository.GetProjectBySlugAsync(slug);
+            if (project is null) throw new ApplicationException("Project does not exist");
+            return project;
         }
 
-        public async Task<Project> UpdateProjectAsync(ProjectDTO request, int id)
+        public async Task InsertProjectAsync(ProjectDTO request)
+        {
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task<Project> UpdateProjectAsync(ProjectUpdateDTO request, int id)
         {
             var project = await _unitOfWork.ProjectRepository.UpdateProjectAsync(id, request);
             await _unitOfWork.SaveAsync();
             return project;
         }
+
     }
 }

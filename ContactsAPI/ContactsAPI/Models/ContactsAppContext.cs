@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using ContactsAPI.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace ContactsAPI.Models;
@@ -18,9 +17,12 @@ public partial class ContactsAppContext : DbContext
 
     public virtual DbSet<Employee> Employees { get; set; }
 
+    public virtual DbSet<EmployeesXProject> EmployeesXProjects { get; set; }
+
     public virtual DbSet<Project> Projects { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+
 
     public override int SaveChanges()
     {
@@ -34,7 +36,7 @@ public partial class ContactsAppContext : DbContext
         return await base.SaveChangesAsync();
     }
 
-        private void AddTimeStamps()
+    private void AddTimeStamps()
     {
         var entities = ChangeTracker.Entries()
             .Where(x => x.Entity is BaseModel && (x.State == EntityState.Added || x.State == EntityState.Modified));
@@ -49,16 +51,19 @@ public partial class ContactsAppContext : DbContext
         }
     }
 
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
         modelBuilder.Entity<Employee>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__EMPLOYEES__3214EC277F4F16A4");
+            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC27108CDAB2");
 
             entity.ToTable("EMPLOYEES");
 
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.CompanyRole)
+                .HasMaxLength(255)
+                .HasColumnName("COMPANY_ROLE");
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("CREATED_AT");
@@ -71,28 +76,47 @@ public partial class ContactsAppContext : DbContext
             entity.Property(e => e.Lastname)
                 .HasMaxLength(255)
                 .HasColumnName("LASTNAME");
-            entity.Property(e => e.CompanyRole)
-                .HasMaxLength(255)
-                .HasColumnName("COMPANY_ROLE");
+            entity.Property(e => e.Slug)
+                .HasMaxLength(50)
+                .HasColumnName("SLUG");
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("UPDATED_AT");
             entity.Property(e => e.UserId).HasColumnName("USER_ID");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Contacts)
+            entity.HasOne(d => d.User).WithMany(p => p.Employees)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__EMPLOYEES__USER_I__398D8EEE");
+                .HasConstraintName("FK__EMPLOYEES__USER___60A75C0F");
+        });
+
+        modelBuilder.Entity<EmployeesXProject>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("EMPLOYEES_X_PROJECTS");
+
+            entity.Property(e => e.EmployeeId).HasColumnName("EMPLOYEE_ID");
+            entity.Property(e => e.ProjectId).HasColumnName("PROJECT_ID");
+
+            entity.HasOne(d => d.Employee).WithMany()
+                .HasForeignKey(d => d.EmployeeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__EMPLOYEES__EMPLO__6754599E");
+
+            entity.HasOne(d => d.Project).WithMany()
+                .HasForeignKey(d => d.ProjectId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__EMPLOYEES__PROJE__68487DD7");
         });
 
         modelBuilder.Entity<Project>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__PROJECTS__3214EC27DBAF9ADA");
+            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC270219797F");
 
             entity.ToTable("PROJECTS");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.EmployeeId).HasColumnName("EMPLOYEE_ID");
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("CREATED_AT");
@@ -102,28 +126,33 @@ public partial class ContactsAppContext : DbContext
             entity.Property(e => e.Description)
                 .HasColumnType("text")
                 .HasColumnName("DESCRIPTION");
+            entity.Property(e => e.Slug)
+                .HasMaxLength(50)
+                .HasColumnName("SLUG");
+            entity.Property(e => e.Title)
+                .HasMaxLength(50)
+                .HasColumnName("TITLE");
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("UPDATED_AT");
             entity.Property(e => e.UserId).HasColumnName("USER_ID");
 
-            entity.HasOne(d => d.Employee).WithMany(p => p.Projects)
-                .HasForeignKey(d => d.EmployeeId)
-                .HasConstraintName("FK__PROJECTS__CONTACT_I__3D5E1FD2");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Tasks)
+            entity.HasOne(d => d.User).WithMany(p => p.Projects)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__PROJECTS__USER_ID__3C69FB99");
+                .HasConstraintName("FK__PROJECTS__USER_I__6477ECF3");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__USERS__3214EC27619BB059");
+            entity.HasKey(e => e.Id).HasName("PK__USERS__3214EC27720BF641");
 
             entity.ToTable("USERS");
 
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("CREATED_AT");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .HasColumnName("EMAIL");
@@ -136,15 +165,12 @@ public partial class ContactsAppContext : DbContext
             entity.Property(e => e.Password)
                 .HasMaxLength(255)
                 .HasColumnName("PASSWORD");
-            entity.Property(e => e.Username)
-                .HasMaxLength(255)
-                .HasColumnName("USERNAME");
-            entity.Property(e => e.CreatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("CREATED_AT");
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("UPDATED_AT");
+            entity.Property(e => e.Username)
+                .HasMaxLength(255)
+                .HasColumnName("USERNAME");
         });
 
         OnModelCreatingPartial(modelBuilder);

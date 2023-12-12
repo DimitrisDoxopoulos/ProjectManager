@@ -17,5 +17,6 @@ namespace ContactsAPI.Services
         public IUserService UserService => new UserService(_unitOfWork, _mapper);
         public IProjectService ProjectService => new ProjectService(_unitOfWork, _mapper);
         public IEmployeeService EmployeeService => new EmployeesService(_unitOfWork, _mapper);
+        public IEmployeesXProjectsService EmployeesXProjectsService => new EmployeesXProjectsService(_unitOfWork, _mapper);
     }
 }

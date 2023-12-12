@@ -45,14 +45,21 @@ namespace ContactsAPI.Services
             return employee;
         }
 
+        public async Task<Employee> GetEmployeeBySlugAsync(string slug)
+        {
+            var employee = await _unitOfWork.EmployeeRepository.GetEmployeeBySlugAsync(slug);
+            if (employee is null) throw new ApplicationException("Employee with slug " + slug + " does not exist");
+            return employee;
+        }
+
         public async Task InsertEmployeeAsync(EmployeeDTO request)
         {
-            if (await _unitOfWork.EmployeeRepository.GetEmployeeByEmailAsync(request.Email!) is null)
+            if (await _unitOfWork.EmployeeRepository.GetEmployeeByEmailAsync(request.Email!) is not null)
                 throw new ApplicationException("Employee already exists");
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task<Employee> UpdateEmployeeAsync(EmployeeDTO request, int id)
+        public async Task<Employee> UpdateEmployeeAsync(EmployeeUpdateDTO request, int id)
         {
             var employee = await _unitOfWork.EmployeeRepository.UpdateEmployeeAsync(id, request);
             await _unitOfWork.SaveAsync();

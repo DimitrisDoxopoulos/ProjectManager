@@ -8,6 +8,7 @@ namespace ContactsAPI.Repositories
         public IUserRepository UserRepository => new UserRepository(_context);
         public IEmployeeRepository EmployeeRepository => new EmployeeRepository(_context);
         public IProjectRepository ProjectRepository => new ProjectRepository(_context);
+        public IEmployeesXProjectsRepository EmployeesXProjectsRepository => new EmployeesXProjectsRepository(_context);
 
         public UnitOfWork(ContactsAppContext context)
         {

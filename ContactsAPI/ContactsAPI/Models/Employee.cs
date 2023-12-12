@@ -1,9 +1,10 @@
-﻿using System;
+﻿using ContactsAPI.Models;
+using System;
 using System.Collections.Generic;
 
 namespace ContactsAPI.Models;
 
-public partial class Employee: BaseModel
+public partial class Employee : BaseModel
 {
     public int UserId { get; set; }
 
@@ -15,7 +16,7 @@ public partial class Employee: BaseModel
 
     public string? CompanyRole { get; set; }
 
-    public virtual ICollection<Project> Projects { get; set; } = new List<Project>();
+    public string? Slug { get; set; }
 
     public virtual User User { get; set; } = null!;
 }

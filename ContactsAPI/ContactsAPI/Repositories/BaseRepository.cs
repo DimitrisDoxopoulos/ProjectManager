@@ -1,6 +1,5 @@
 ﻿using ContactsAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using Project = ContactsAPI.Models.Project;
 
 namespace ContactsAPI.Repositories
 {
@@ -20,7 +19,7 @@ namespace ContactsAPI.Repositories
             await _table.AddAsync(entity);
         }
 
-        public Project AddRangeAsync(IEnumerable<T> entities)
+        public Task AddRangeAsync(IEnumerable<T> entities)
         {
             throw new NotImplementedException();
         }
