@@ -29,6 +29,11 @@
           <mat-panel-title>Management</mat-panel-title>
         </mat-expansion-panel-header>
         <a mat-list-item routerLink="home">Home</a>
+        <a mat-list-item routerLink="manage">Manage Profile</a>
+        <a mat-list-item routerLink="change-password">Change Password</a>
+        <a mat-list-item routerLink="employees">Employees</a>
+        <a mat-list-item routerLink="projects">Projects</a>
+        <a mat-list-item routerLink="manage-assignments">Manage Assignments</a>
       </mat-expansion-panel>
     </mat-nav-list>
   </mat-sidenav>
@@ -46,7 +51,7 @@
       <button class="btn btn-primary" (click)="logout()">Log Out</button>
     </mat-toolbar>
     <div class="container">
-      <router-outlet></router-outlet>
+        <router-outlet class="h-100 d-flex flex-column align-items-center justify-content-center"></router-outlet>
     </div>
     <footer class="footer">
       <app-footer></app-footer>

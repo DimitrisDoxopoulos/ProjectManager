@@ -35,9 +35,16 @@ namespace ContactsAPI.Services
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task<User?> UpdateUserAccountInfoAsync(UserDTO request, int userId)
+        public async Task<User?> UpdateUserAccountInfoAsync(UserUpdateDTO request, int userId)
         {
             var user = await _unitOfWork.UserRepository.UpdateUsrAsync(userId, request);
+            await _unitOfWork.SaveAsync();
+            return user;
+        }
+
+        public async Task<User?> ChangePasswordAsync(PasswordUpdateDTO request)
+        {
+            var user = await _unitOfWork.UserRepository.ChangePassword(request);
             await _unitOfWork.SaveAsync();
             return user;
         }

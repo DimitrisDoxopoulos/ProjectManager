@@ -1,0 +1,13 @@
+<mat-card *ngIf="assignments; else nodata" class="mb-4 card-shadow class.mat-elevation-z8">
+  <mat-card-header class="d-flex justify-content-between align-items-center">
+    <mat-card-title>Assignment Management</mat-card-title>
+    <button class="btn btn-outline-primary btn-lg" (click)="openCreateAssignmentModal()">Insert Assignment</button>
+  </mat-card-header>
+  <mat-card-content>
+
+  </mat-card-content>
+</mat-card>
+
+<ng-template #nodata>
+  <div class="alert alert-danger">You have no employees for now</div>
+</ng-template>

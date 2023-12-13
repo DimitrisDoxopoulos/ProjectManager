@@ -37,7 +37,7 @@ export class LoginComponent {
     }
 
     this.authService.loginUser(userLogin).subscribe({
-      complete: () => this.router.navigateByUrl('/admin'),
+      complete: () => this.router.navigateByUrl('/admin/home'),
       next: (res) => {
         const loggedInUser = res as UserLogin
         this.authService.makeLoginSession(loggedInUser)

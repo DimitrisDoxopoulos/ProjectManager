@@ -1,8 +1,11 @@
-﻿namespace ContactsAPI.Services
+﻿using ContactsAPI.Models;
+
+namespace ContactsAPI.Services
 {
     public interface IEmployeesXProjectsService
     {
-        Task AssignProjectAsync(int employeeId, int projectId);
-        Task<bool> DeleteAssignmentAsync(int employeeId, int projectId);
+        Task AssignProjectAsync(params int[] request);
+        Task<bool> DeleteAssignmentAsync(params int[] request);
+        Task<IEnumerable<EmployeesXProject>> GetAllAssignmentsAsync();
     }
 }

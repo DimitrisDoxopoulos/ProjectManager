@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ContactsAPI.Models;
 using ContactsAPI.Repositories;
 
 namespace ContactsAPI.Services
@@ -14,15 +15,21 @@ namespace ContactsAPI.Services
             _mapper = mapper;
         }
 
-        public async Task AssignProjectAsync(int employeeId, int projectId)
+        public async Task AssignProjectAsync(params int[] request)
         {
             await _unitOfWork.SaveAsync(); ;
         }
 
-        public async Task<bool> DeleteAssignmentAsync(int employeeId, int projectId)
+        public async Task<bool> DeleteAssignmentAsync(params int[] request)
         {
-            _unitOfWork.EmployeesXProjectsRepository.RemoveEmployeeFromProject(employeeId, projectId);
+            _unitOfWork.EmployeesXProjectsRepository.RemoveEmployeeFromProject(request);
             return true;
+        }
+
+        public async Task<IEnumerable<EmployeesXProject>> GetAllAssignmentsAsync()
+        {
+            List<EmployeesXProject> assignments = (List<EmployeesXProject>)await _unitOfWork.EmployeesXProjectsRepository.GetAllAssignmentsAsync();
+            return assignments;
         }
     }
 }

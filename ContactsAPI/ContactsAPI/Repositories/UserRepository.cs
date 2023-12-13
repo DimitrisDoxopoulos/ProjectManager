@@ -27,15 +27,25 @@ namespace ContactsAPI.Repositories
             return true;
         }
 
-        public async Task<User> UpdateUsrAsync(int userId, UserDTO request)
+        public async Task<User> UpdateUsrAsync(int userId, UserUpdateDTO request)
         {
             var user = await _context.Users.Where(x => x.Id == userId).FirstAsync();
             user.Username = request.Username;
             user.Email = request.Email;
-            user.Password = EncryptionUtil.Encrypt(request.Password);
             user.Firstname = request.Firstname;
             user.Lastname = request.Lastname;
 
+            _context.Users.Update(user);
+            return user;
+        }
+
+        public async Task<User?> ChangePassword(PasswordUpdateDTO request)
+        {
+            var user = await _context.Users.Where(x => x.Id == request.UserId).FirstAsync();
+            if (!EncryptionUtil.IsValidPassword(request.OldPassword!, user.Password)) return null;
+            if (!request.NewPassword!.Equals(request.NewPasswordConfirm)) return null;
+
+            user.Password = EncryptionUtil.Encrypt(request.NewPassword);
             _context.Users.Update(user);
             return user;
         }

@@ -76,7 +76,7 @@ namespace ContactsAPI.Controllers
         }
 
         [HttpPatch]
-        public async Task<IActionResult> UpdateUser(UserDTO request)
+        public async Task<IActionResult> UpdateUser(UserUpdateDTO request)
         {
             try
             {
@@ -96,6 +96,20 @@ namespace ContactsAPI.Controllers
             try
             {
                 var user = await _applicationService.UserService.GetUserByUsernameAsync(username);
+                return Ok(user);
+            } catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPatch]
+        [Route("/api/users/change-password")]
+        public async Task<IActionResult> ChangePasswordAsync(PasswordUpdateDTO request)
+        {
+            try
+            {
+                var user = await _applicationService.UserService.ChangePasswordAsync(request);
                 return Ok(user);
             } catch (Exception ex)
             {

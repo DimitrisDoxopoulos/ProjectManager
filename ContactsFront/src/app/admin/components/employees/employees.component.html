@@ -1,0 +1,33 @@
+<mat-card *ngIf="employees; else nodata" class="mb-4 card-shadow class.mat-elevation-z8">
+  <mat-card-header class="d-flex justify-content-between align-items-center">
+    <mat-card-title>Employee Management</mat-card-title>
+    <button class="btn btn-outline-primary btn-lg" (click)="openCreateEmployeeModal()">Insert Employee</button>
+  </mat-card-header>
+  <mat-card-content >
+    <table *ngIf="employees; else nodata" mat-table [dataSource]="dataSource" class="demo-table">
+      <ng-container matColumnDef="firstname">
+        <th mat-header-cell *matHeaderCellDef>First Name</th>
+        <td mat-cell *matCellDef="let element">{{element.firstname}}</td>
+      </ng-container>
+      <ng-container matColumnDef="lastname">
+        <th mat-header-cell *matHeaderCellDef>Family Name</th>
+        <td mat-cell *matCellDef="let element">{{element.lastname}}</td>
+      </ng-container>
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td mat-cell *matCellDef="let element">{{element.email}}</td>
+      </ng-container>
+      <ng-container matColumnDef="companyRole">
+        <th mat-header-cell *matHeaderCellDef>Company Role</th>
+        <td mat-cell *matCellDef="let element">{{element.companyRole}}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="this.displayColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: this.displayColumns"></tr>
+    </table>
+  </mat-card-content>
+</mat-card>
+
+<ng-template #nodata>
+  <div class="alert alert-danger">You have no employees for now</div>
+</ng-template>

@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using ContactsAPI.Models;
 using ContactsAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Any;
+using System.Collections.Generic;
 
 namespace ContactsAPI.Controllers
 {
@@ -22,8 +25,11 @@ namespace ContactsAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AssignProject(int employeeId, int projectId)
+        public async Task<IActionResult> AssignProject(params int[] request)
         {
+            var employeeId = request[0];
+            var projectId = request[1];
+
             var employee = _applicationService.EmployeeService.GetEmployeeByIdAsync( employeeId );
             var project = _applicationService.ProjectService.GetProject( projectId );
 
@@ -38,9 +44,13 @@ namespace ContactsAPI.Controllers
             }
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> RemoveAssignment(int employeeId, int projectId)
+        [HttpPost]
+        [Route("/api/assign-projects/delete")]
+        public async Task<IActionResult> RemoveAssignment(params int[] request)
         {
+            var employeeId = request[0];
+            var projectId = request[1];
+
             var employee = _applicationService.EmployeeService.GetEmployeeByIdAsync(employeeId);
             var project = _applicationService.ProjectService.GetProject(projectId);
 
@@ -51,6 +61,20 @@ namespace ContactsAPI.Controllers
                 return Ok();
             }
             catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("/api/assign-projects/all")]
+        public async Task<IActionResult> GetAllAssignments()
+        {
+            try
+            {
+                List<EmployeesXProject> assignments = (List<EmployeesXProject>)await _applicationService.EmployeesXProjectsService.GetAllAssignmentsAsync();
+                return Ok(assignments);
+            } catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

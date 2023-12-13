@@ -7,7 +7,8 @@ namespace ContactsAPI.Repositories
     {
         Task<bool> SignUpUserAsync(UserDTO userDTO);
         Task<User> GetUserAsync(string username, string password);
-        Task<User> UpdateUsrAsync(int userId, UserDTO userDTO);
+        Task<User> UpdateUsrAsync(int userId, UserUpdateDTO request);
         Task<User?> GetByUsernameAsync(string username);
+        Task<User?> ChangePassword(PasswordUpdateDTO request);
     }
 }

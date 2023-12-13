@@ -53,13 +53,14 @@ namespace ContactsAPI.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteEmployeeAsync(int id)
+        [Route("/api/employees/{slug}")]
+        public async Task<IActionResult> DeleteEmployeeAsync(string slug)
         {
             try
             {
-                var employee = await _applicatiionService.EmployeeService.GetEmployeeByIdAsync(id);
+                var employee = await _applicatiionService.EmployeeService.GetEmployeeBySlugAsync(slug);
                 if (employee is null) return NotFound();
-                _applicatiionService.EmployeeService.DeleteEmployee(id);
+                _applicatiionService.EmployeeService.DeleteEmployee(employee.Id);
                 return Ok();
             } catch(Exception ex)
             {
@@ -68,7 +69,7 @@ namespace ContactsAPI.Controllers
         }
 
         [HttpGet]
-        [Route("/api/employee/{slug}")]
+        [Route("/api/employees/{slug}")]
         public async Task<IActionResult> GetEmployeeBySlugAsync(string slug)
         {
             try

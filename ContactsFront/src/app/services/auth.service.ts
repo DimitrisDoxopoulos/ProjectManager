@@ -4,6 +4,8 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {UserLogin} from "../models/user-login";
 import {UserRegister} from "../models/user-register";
 import {Router} from "@angular/router";
+import {UserUpdate} from "../models/user-update";
+import {UpdatePassword} from "../models/update-password";
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +13,7 @@ import {Router} from "@angular/router";
 export class AuthService {
   url: string = environment.BACKEND_API_URL;
   session: UserLogin | undefined
+
   constructor(private http: HttpClient, private router: Router) {
     let session: any = localStorage.getItem('session');
     if (session) {
@@ -26,6 +29,24 @@ export class AuthService {
       })
     }
     return this.http.post(`${this.url}users/login`, userCredentials, httpOptions)
+  }
+
+  public updateUser(userInfo: UserUpdate) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*'
+      })
+    }
+    return this.http.patch(`${this.url}users`, userInfo, httpOptions)
+  }
+
+  public changePassword(passwordObject: UpdatePassword) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*'
+      })
+    }
+    return this.http.patch(`${this.url}users/change-password`, passwordObject, httpOptions)
   }
 
   public registerUser(userCredentials: UserRegister) {

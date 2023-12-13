@@ -6,8 +6,11 @@ namespace ContactsAPI.Repositories
     public class EmployeesXProjectsRepository : BaseRepository<EmployeesXProject>, IEmployeesXProjectsRepository
     {
         public EmployeesXProjectsRepository(ContactsAppContext context) : base(context) { }
-        public async Task<bool> AssignProjectToEmployee(int employeeId, int projectId)
+        public async Task<bool> AssignProjectToEmployee(params int[] request)
         {
+            var employeeId = request[0];
+            var projectId = request[1];
+
             var employee = _context.Employees.Where(x => x.Id == employeeId).FirstOrDefault();
             var project = _context.Projects.Where(x => x.Id == projectId).FirstOrDefault();
             if (employee is null || project is null) return false;
@@ -20,8 +23,11 @@ namespace ContactsAPI.Repositories
             return true;
         }
 
-        public async Task<bool> RemoveEmployeeFromProject(int employeeId, int projectId)
+        public async Task<bool> RemoveEmployeeFromProject(params int[] request)
         {
+            var employeeId = request[0];
+            var projectId = request[1];
+
             var employee = _context.Employees.Where(x => x.Id == employeeId).FirstOrDefault();
             var project = _context.Projects.Where(x => x.Id == projectId).FirstOrDefault();
             if (employee is null || project is null) return false;
@@ -31,6 +37,12 @@ namespace ContactsAPI.Repositories
                 ).FirstOrDefault();
             _context.EmployeesXProjects.Remove(assignment);
             return true;
+        }
+
+        public async Task<IEnumerable<EmployeesXProject>> GetAllAssignmentsAsync()
+        {
+            List<EmployeesXProject> assignments = await _context.EmployeesXProjects.ToListAsync();
+            return assignments;
         }
     }
 }

@@ -37,7 +37,7 @@ namespace ContactsAPI.Controllers
         }
 
         [HttpPatch]
-        [Route("/api/projects/update")]
+        [Route("/api/projects")]
         public async Task<IActionResult> UpdateProjectAsync(ProjectUpdateDTO request)
         {
             try
@@ -66,14 +66,14 @@ namespace ContactsAPI.Controllers
         }
 
         [HttpDelete]
-        [Route("/api/projects/delete/{id}")]
-        public async Task<IActionResult> DeleteProjectAsync(int id)
+        [Route("/api/projects/{slug}")]
+        public async Task<IActionResult> DeleteProjectAsync(string slug)
         {
             try
             {
-                var project = await _applicatiionService.ProjectService.GetProject(id);
+                var project = await _applicatiionService.ProjectService.GetProjectBySlugAsync(slug);
                 if (project is null) return NotFound();
-                _applicatiionService.ProjectService.DeleteProject(id);
+                _applicatiionService.ProjectService.DeleteProject(project.Id);
                 return Ok();
             } catch (Exception ex)
             {
