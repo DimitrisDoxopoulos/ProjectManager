@@ -11,11 +11,12 @@ import {MatListModule} from "@angular/material/list";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {LoginComponent} from "../../components/login/login.component";
 import {AuthService} from "../../services/auth.service";
+import {FooterComponent} from "../footer/footer.component";
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, MatSidenavModule, MatToolbarModule, RouterLink, MatButtonModule, MatIconModule, MatListModule, MatExpansionModule, RouterOutlet],
+  imports: [CommonModule, MatSidenavModule, MatToolbarModule, RouterLink, MatButtonModule, MatIconModule, MatListModule, MatExpansionModule, RouterOutlet, FooterComponent],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
