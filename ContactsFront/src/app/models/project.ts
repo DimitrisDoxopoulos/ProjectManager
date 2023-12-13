@@ -3,6 +3,7 @@ export interface Project {
   title: string;
   description: string;
   deadline: Date;
+  slug: string;
   createdAt: Date;
   updatedAt: Date;
 }

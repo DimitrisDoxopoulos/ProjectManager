@@ -4,6 +4,9 @@ import {MatTableDataSource, MatTableModule} from "@angular/material/table";
 import {Project} from "../../../models/project";
 import {ProjectService} from "../../../services/project.service";
 import {MatCardModule} from "@angular/material/card";
+import {InsertProjectComponent} from "./insert-project/insert-project.component";
+import {MatDialog} from "@angular/material/dialog";
+import {UpdateProjectComponent} from "./update-project/update-project.component";
 
 @Component({
   selector: 'app-projects',
@@ -18,7 +21,7 @@ export class ProjectsComponent implements OnInit {
   projects: Project[] = [];
   dataSource: MatTableDataSource<Project> = new MatTableDataSource<Project>();
 
-  constructor(private projectService: ProjectService) {
+  constructor(private projectService: ProjectService, public dialog: MatDialog) {
 
   }
 
@@ -31,7 +34,7 @@ export class ProjectsComponent implements OnInit {
       complete: () => {
         console.log(this.projects)
         this.dataSource = new MatTableDataSource<Project>(this.projects);
-        this.displayColumns = ['title', 'description', 'deadline']
+        this.displayColumns = ['title', 'description', 'deadline', 'actions']
       },
       next: (res) => {
         this.projects = res as Project[]
@@ -41,6 +44,27 @@ export class ProjectsComponent implements OnInit {
   }
 
   openCreateProjectModal() {
+    const dialogRef = this.dialog.open(InsertProjectComponent, {
+      width: '800px',
+      autoFocus: false
+    })
+  }
 
+  openEditModal(project: Project) {
+    const dialogRef = this.dialog.open(UpdateProjectComponent, {
+      data: project,
+      width: '800px',
+      autoFocus: false
+    })
+  }
+
+  deleteProject(project: Project) {
+    if (confirm(`Delete project ${project.title}?`)) {
+      this.projectService.deleteProject(project.slug).subscribe({
+        complete: () => {},
+        next: () => {},
+        error: (error) => console.log(error)
+      })
+    }
   }
 }

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminRoutingModule } from './admin-routing.module';
 import {MatDialogModule} from "@angular/material/dialog";
+import {MatNativeDateModule} from "@angular/material/core";
 
 
 @NgModule({
@@ -9,7 +10,8 @@ import {MatDialogModule} from "@angular/material/dialog";
   imports: [
     CommonModule,
     AdminRoutingModule,
-    MatDialogModule
+    MatDialogModule,
+    MatNativeDateModule,
   ]
 })
 export class AdminModule { }
