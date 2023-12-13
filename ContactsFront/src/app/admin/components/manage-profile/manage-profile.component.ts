@@ -5,6 +5,7 @@ import {MatCardModule} from "@angular/material/card";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {RouterLink} from "@angular/router";
+import {AuthService} from "../../../services/auth.service";
 
 @Component({
   selector: 'app-manage-profile',
@@ -15,10 +16,10 @@ import {RouterLink} from "@angular/router";
 })
 export class ManageProfileComponent implements OnInit {
   updateProfileForm: FormGroup
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private authService: AuthService) {
     this.updateProfileForm = this.fb.group({
       username: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required]],
       firstname: ['', [Validators.required, Validators.minLength(4)]],
       lastname: ['', [Validators.required, Validators.minLength(4)]]
     })
@@ -28,8 +29,11 @@ export class ManageProfileComponent implements OnInit {
   }
 
   onLoadPage() {
-    const user = localStorage.getItem('session')
-    console.log(user)
+    const user = this.authService.session
+    this.updateProfileForm.controls['username'].setValue(user.username)
+    this.updateProfileForm.controls['email'].setValue(user.email)
+    this.updateProfileForm.controls['firstname'].setValue(user.firstname)
+    this.updateProfileForm.controls['lastname'].setValue(user.lastname)
   }
 
   updateUser() {

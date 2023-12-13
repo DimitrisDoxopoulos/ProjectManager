@@ -3,6 +3,8 @@ import {environment} from "../../environments/environment";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {Employee} from "../models/employee";
+import {EmployeeInsert} from "../models/employeeInsert";
+import {EmployeeUpdate} from "../models/employeeUpdate";
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +22,7 @@ export class EmployeeService {
     return this.http.get<Employee[]>(`${this.url}employees/all`, httpOptions)
   }
 
-  public insertEmployee(employee: Employee) {
+  public insertEmployee(employee: EmployeeInsert) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Access-Control-Allow-Origin': '*'
@@ -29,7 +31,7 @@ export class EmployeeService {
     return this.http.post(`${this.url}employees`, employee, httpOptions)
   }
 
-  public updateEmployee(employee: Employee) {
+  public updateEmployee(employee: EmployeeUpdate) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Access-Control-Allow-Origin': '*'

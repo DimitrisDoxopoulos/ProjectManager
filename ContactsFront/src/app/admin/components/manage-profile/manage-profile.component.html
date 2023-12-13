@@ -14,7 +14,7 @@
               <mat-error>This is a required field</mat-error>
             </mat-form-field>
           </div>
-          <div class="col-md-12">
+          <div class="col-md-12 mt-3">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Last Name</mat-label>
               <input matInput formControlName="lastname">
@@ -22,7 +22,7 @@
               <mat-error>This is a required field</mat-error>
             </mat-form-field>
           </div>
-          <div class="col-md-12">
+          <div class="col-md-12 mt-3">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Username</mat-label>
               <input matInput formControlName="username">
@@ -30,7 +30,7 @@
               <mat-error>This is a required field</mat-error>
             </mat-form-field>
           </div>
-          <div class="col-md-12">
+          <div class="col-md-12 mt-3">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Email</mat-label>
               <input matInput formControlName="email">
@@ -51,7 +51,7 @@
         <div class="d-flex w-100 flex-wrap flex-row justify-content-end align-items-center">
           <div class="d-flex m-2">
             <button [disabled]="updateProfileForm.invalid" (click)="updateUser()" class="btn btn-lg btn-primary">
-              Register
+              Update
             </button>
           </div>
           <div class="d-flex m-2">

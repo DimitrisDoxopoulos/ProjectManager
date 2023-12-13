@@ -12,7 +12,7 @@ import {UpdatePassword} from "../models/update-password";
 })
 export class AuthService {
   url: string = environment.BACKEND_API_URL;
-  session: UserLogin | undefined
+  session: any = []
 
   constructor(private http: HttpClient, private router: Router) {
     let session: any = localStorage.getItem('session');

@@ -42,9 +42,7 @@ namespace ContactsAPI.Repositories
         public async Task<User?> ChangePassword(PasswordUpdateDTO request)
         {
             var user = await _context.Users.Where(x => x.Id == request.UserId).FirstAsync();
-            if (!EncryptionUtil.IsValidPassword(request.OldPassword!, user.Password)) return null;
             if (!request.NewPassword!.Equals(request.NewPasswordConfirm)) return null;
-
             user.Password = EncryptionUtil.Encrypt(request.NewPassword);
             _context.Users.Update(user);
             return user;

@@ -21,6 +21,17 @@
         <th mat-header-cell *matHeaderCellDef>Company Role</th>
         <td mat-cell *matCellDef="let element">{{element.companyRole}}</td>
       </ng-container>
+      <ng-container matColumnDef="actions">
+        <th style="width: 80px" mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element" class="d-flex justify-content-center align-items-center mt-4">
+          <button class="btn btn-outline-primary btn-sm" type="button" (click)="openEditModal(element)">
+            <i class="bi bi-pencil-square"></i>
+          </button>
+          <button class="btn btn-outline-danger btn-sm mx-2" type="button" (click)="deleteEmployee(element)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
+      </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="this.displayColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: this.displayColumns"></tr>

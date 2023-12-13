@@ -5,6 +5,7 @@ export interface Employee {
   lastname: string;
   email: string;
   companyRole: string;
+  slug: string;
   createdAt: Date,
   updatedAt: Date
 }

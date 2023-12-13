@@ -4,6 +4,9 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {MatCardModule} from "@angular/material/card";
 import {MatInputModule} from "@angular/material/input";
 import {RouterLink} from "@angular/router";
+import {AuthService} from "../../../services/auth.service";
+import {UpdatePassword} from "../../../models/update-password";
+import {matchpassword} from "../../../validators/matchpassword.validator";
 
 @Component({
   selector: 'app-change-password',
@@ -15,25 +18,26 @@ import {RouterLink} from "@angular/router";
 export class ChangePasswordComponent {
   changePasswordForm: FormGroup
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private authService: AuthService) {
     this.changePasswordForm = this.fb.group({
-      oldPassword: ['', [Validators.required, Validators.pattern('^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*\\W).{8,}$')]],
       newPassword: ['', [Validators.required, Validators.pattern('^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*\\W).{8,}$')]],
-      passwordRepeat: ['', [Validators.required, Validators.pattern('^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*\\W).{8,}$')],
-        { validator: this.validateConfirmPassword }],
-    })
-  }
-
-  validateConfirmPassword(formGroup: FormGroup) {
-    const newPassword = formGroup.controls['newPassword'].value
-    const passwordRepeat = formGroup.controls['passwordRepeat'].value
-    if ( newPassword && passwordRepeat) {
-      return newPassword === passwordRepeat ? false : { 'notMatched': true }
-    }
-    return false;
+      passwordRepeat: ['', [Validators.required, Validators.pattern('^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*\\W).{8,}$')]],
+    }, {validators: matchpassword})
   }
 
   changePassword() {
+    let user = this.authService.session;
+    console.log('User', user)
+    const passwordData: UpdatePassword = {
+      id: user.id,
+      newPassword: this.changePasswordForm.controls['newPassword'].value,
+      newPasswordConfirm: this.changePasswordForm.controls['passwordRepeat'].value
+    }
 
+    this.authService.changePassword(passwordData).subscribe({
+      complete: () => {},
+      next: () => {},
+      error: (error) => console.log(error)
+    })
   }
 }
