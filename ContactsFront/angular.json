@@ -37,10 +37,10 @@
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "@angular/material/prebuilt-themes/deeppurple-amber.css",
+              "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "src/styles.css"
             ],
-            "scripts": [
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -64,13 +64,7 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.development.ts"
-                }
-              ]
+              "namedChunks": true
             }
           },
           "defaultConfiguration": "production"
@@ -79,10 +73,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "ContactsFront:build:production"
+              "browserTarget": "ContactsFront:build:production"
             },
             "development": {
-              "buildTarget": "ContactsFront:build:development"
+              "browserTarget": "ContactsFront:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -90,7 +84,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "ContactsFront:build"
+            "browserTarget": "ContactsFront:build"
           }
         },
         "test": {
@@ -116,6 +110,6 @@
     }
   },
   "cli": {
-    "analytics": "74b18600-1cc9-4c4d-9b26-898eb789657a"
+    "analytics": "9694add8-4d3d-44c9-aa53-570861d914bd"
   }
 }
