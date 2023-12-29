@@ -7,6 +7,7 @@ import {MatCardModule} from "@angular/material/card";
 import {InsertProjectComponent} from "./insert-project/insert-project.component";
 import {MatDialog} from "@angular/material/dialog";
 import {UpdateProjectComponent} from "./update-project/update-project.component";
+import {MessagesService} from "../../../services/messages.service";
 
 @Component({
   selector: 'app-projects',
@@ -21,7 +22,10 @@ export class ProjectsComponent implements OnInit {
   projects: Project[] = [];
   dataSource: MatTableDataSource<Project> = new MatTableDataSource<Project>();
 
-  constructor(private projectService: ProjectService, public dialog: MatDialog) {
+  constructor(
+    private projectService: ProjectService, public dialog: MatDialog,
+    private messagesService: MessagesService
+  ) {
 
   }
 
@@ -55,6 +59,12 @@ export class ProjectsComponent implements OnInit {
       data: project,
       width: '800px',
       autoFocus: false
+    })
+
+    const sub = dialogRef.componentInstance.isUpdated.subscribe((data) => {
+      this.messagesService.showSuccessMessage('Success!', 'The employee was successfully updated!')
+      dialogRef.close()
+      window.location.reload()
     })
   }
 

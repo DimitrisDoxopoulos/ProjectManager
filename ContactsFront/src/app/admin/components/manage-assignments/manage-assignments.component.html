@@ -4,10 +4,21 @@
     <button class="btn btn-outline-primary btn-lg" (click)="openCreateAssignmentModal()">Insert Assignment</button>
   </mat-card-header>
   <mat-card-content>
-
+    <div *ngFor="let project of projects" class="col-xl-3">
+      <mat-card class="mb-4 card-shadow class.mat-elevation-z8">
+        <mat-card-header class="d-flex justify-content-between align-items-center">
+          <mat-card-title>{{ project.title }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngFor="let employee of project.employees">
+            {{ employee.firstname }} {{ employee.lastname }}
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
   </mat-card-content>
 </mat-card>
 
 <ng-template #nodata>
-  <div class="alert alert-danger">You have no employees for now</div>
+  <div class="alert alert-danger">You have no assignments for now</div>
 </ng-template>

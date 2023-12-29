@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogModule} from "@angular/material/dialog";
@@ -7,6 +7,7 @@ import {MatInputModule} from "@angular/material/input";
 import {EmployeeService} from "../../../../services/employee.service";
 import {EmployeeUpdate} from "../../../../models/employeeUpdate";
 import {AuthService} from "../../../../services/auth.service";
+import {MessagesService} from "../../../../services/messages.service";
 
 @Component({
   selector: 'app-edit-employee',
@@ -17,10 +18,12 @@ import {AuthService} from "../../../../services/auth.service";
 })
 export class EditEmployeeComponent implements OnInit {
   updateEmployeeForm: FormGroup
+  @Output() isUpdated: EventEmitter<boolean> = new EventEmitter();
+
   constructor(
     private fb: FormBuilder, private employeeService: EmployeeService,
     @Inject(MAT_DIALOG_DATA) public data: EmployeeUpdate,
-    private authService: AuthService
+    private authService: AuthService, private messagesService: MessagesService
   ) {
     this.updateEmployeeForm = this.fb.group({
       firstname: ['', Validators.required],
@@ -52,9 +55,9 @@ export class EditEmployeeComponent implements OnInit {
       companyRole: this.updateEmployeeForm.controls['companyRole'].value,
     }
     this.employeeService.updateEmployee(updatedEmployee).subscribe({
-      complete: () => {},
+      complete: () => this.isUpdated.emit(true),
       next: () => {},
-      error: (error) => console.log(error)
+      error: (error) => this.messagesService.showErrorMessage('Error: ' + error.status, error.message)
     })
   }
 }

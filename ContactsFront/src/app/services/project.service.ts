@@ -64,6 +64,6 @@ export class ProjectService {
         'Access-Control-Allow-Origin': '*'
       })
     }
-    return this.http.post<Project[]>(`${this.url}projects/all`, userId, httpOptions)
+    return this.http.post<Project[]>(`${this.url}projects/all?userId=${userId}`, httpOptions)
   }
 }

@@ -22,13 +22,19 @@ namespace ContactsAPI.Services
 
         public async Task<bool> DeleteAssignmentAsync(params int[] request)
         {
-            _unitOfWork.EmployeesXProjectsRepository.RemoveEmployeeFromProject(request);
+            await _unitOfWork.EmployeesXProjectsRepository.RemoveEmployeeFromProject(request);
             return true;
         }
 
-        public async Task<IEnumerable<EmployeesXProject>> GetAllAssignmentsAsync()
+        public async Task<IEnumerable<EmployeeProject>> GetAllAssignmentsAsync()
         {
-            List<EmployeesXProject> assignments = (List<EmployeesXProject>)await _unitOfWork.EmployeesXProjectsRepository.GetAllAssignmentsAsync();
+            List<EmployeeProject> assignments = (List<EmployeeProject>) await _unitOfWork.EmployeesXProjectsRepository.GetAllAssignmentsAsync();
+            return assignments;
+        }
+
+        public async Task<IEnumerable<EmployeeProject>> GetAllAssignmentsOfUserAsync(int userId)
+        {
+            List<EmployeeProject> assignments = (List<EmployeeProject>) await _unitOfWork.EmployeesXProjectsRepository.GetAllAssignmentsOfUserAsync(userId);
             return assignments;
         }
     }

@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatDatepickerModule} from "@angular/material/datepicker";
@@ -9,6 +9,7 @@ import {ProjectService} from "../../../../services/project.service";
 import {AuthService} from "../../../../services/auth.service";
 import {Project} from "../../../../models/project";
 import {ProjectUpdate} from "../../../../models/projectUpdate";
+import {MessagesService} from "../../../../services/messages.service";
 
 @Component({
   selector: 'app-update-project',
@@ -19,10 +20,13 @@ import {ProjectUpdate} from "../../../../models/projectUpdate";
 })
 export class UpdateProjectComponent implements OnInit {
   updateProjectForm: FormGroup
+  @Output() isUpdated: EventEmitter<boolean> = new EventEmitter();
 
   constructor(
     private fb: FormBuilder, private projectService: ProjectService,
-    private authService: AuthService, @Inject(MAT_DIALOG_DATA) public data: Project) {
+    private authService: AuthService, @Inject(MAT_DIALOG_DATA) public data: Project,
+    private messagesService: MessagesService
+  ) {
     this.updateProjectForm = this.fb.group({
       title: ['', [Validators.required]],
       description: ['', [Validators.required]],
@@ -48,9 +52,9 @@ export class UpdateProjectComponent implements OnInit {
       deadline: this.updateProjectForm.controls['deadline'].value
     }
     this.projectService.updateProject(updatedProject).subscribe({
-      complete: () => {},
+      complete: () => this.isUpdated.emit(true),
       next: () => {},
-      error: (error) => console.log(error)
+      error: (error) => this.messagesService.showErrorMessage('Error: ' + error.status, error.message)
     })
   }
 }

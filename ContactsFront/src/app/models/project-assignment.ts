@@ -1,4 +1,5 @@
 export interface ProjectAssignment {
   employeeId: number,
-  projectId: number
+  projectId: number,
+  userId: number
 }

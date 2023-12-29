@@ -57,4 +57,13 @@ export class EmployeeService {
     }
     return this.http.delete(`${this.url}employees/${slug}`, httpOptions)
   }
+
+  public getAllEmployeesOfUser(userId: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*'
+      })
+    }
+    return this.http.post<Employee[]>(`${this.url}employees/of-user?userId=${userId}`, httpOptions)
+  }
 }

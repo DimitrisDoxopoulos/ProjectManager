@@ -16,36 +16,29 @@ namespace ContactsAPI.Services
             _mapper = mapper;
         }
 
-        public bool DeleteProject(int id)
+        public async Task<bool> DeleteProjectAsync(int id)
         {
-            var project = _unitOfWork.ProjectRepository.GetProjectAsync(id);
+            var project = await _unitOfWork.ProjectRepository.GetProjectAsync(id);
             if (project == null) throw new ApplicationException("Project does not exist");
             _unitOfWork.ProjectRepository.DeleteProjectAsync(id);
             return true;
         }
 
-        public async Task<IEnumerable<Project>> GetAllProjectsAsync()
+        public async Task<ICollection<Project>> GetAllProjectsAsync()
         {
-            List<Project> projects = (List<Project>)await _unitOfWork.ProjectRepository.GetAllProjectsAsync();
+            ICollection<Project> projects = await _unitOfWork.ProjectRepository.GetAllProjectsAsync();
             return projects;
         }
 
-        public async Task<IEnumerable<Project>> GetAllProjectsOfUserAsync(int userId)
+        public async Task<ICollection<Project>> GetAllProjectsOfUserAsync(int userId)
         {
-            List<Project> projects = (List<Project>)await _unitOfWork.ProjectRepository.GetAllProjectsOfUserAsync(userId);
+            ICollection<Project> projects = await _unitOfWork.ProjectRepository.GetAllProjectsOfUserAsync(userId);
             return projects;
         }
 
-        public async Task<Project> GetProject(int id)
+        public async Task<Project> GetProjectAsync(int id)
         {
             var project = await _unitOfWork.ProjectRepository.GetProjectAsync(id);
-            if (project is null) throw new ApplicationException("Project does not exist");
-            return project;
-        }
-
-        public async Task<Project> GetProjectBySlugAsync(string slug)
-        {
-            var project = await _unitOfWork.ProjectRepository.GetProjectBySlugAsync(slug);
             if (project is null) throw new ApplicationException("Project does not exist");
             return project;
         }

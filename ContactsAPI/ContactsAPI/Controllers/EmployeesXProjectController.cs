@@ -29,14 +29,15 @@ namespace ContactsAPI.Controllers
         {
             var employeeId = request[0];
             var projectId = request[1];
+            var userId = request[2];
 
             var employee = _applicationService.EmployeeService.GetEmployeeByIdAsync( employeeId );
-            var project = _applicationService.ProjectService.GetProject( projectId );
+            var project = _applicationService.ProjectService.GetProjectAsync( projectId );
 
             if (employee is null || project is null) return NotFound();
             try
             {
-                await _applicationService.EmployeesXProjectsService.AssignProjectAsync(employeeId, projectId);
+                await _applicationService.EmployeesXProjectsService.AssignProjectAsync(employeeId, projectId, userId);
                 return Ok();
             } catch (Exception ex)
             {
@@ -50,14 +51,15 @@ namespace ContactsAPI.Controllers
         {
             var employeeId = request[0];
             var projectId = request[1];
+            var userId = request[2];
 
             var employee = _applicationService.EmployeeService.GetEmployeeByIdAsync(employeeId);
-            var project = _applicationService.ProjectService.GetProject(projectId);
+            var project = _applicationService.ProjectService.GetProjectAsync(projectId);
 
             if (employee is null || project is null) return NotFound();
             try
             {
-                await _applicationService.EmployeesXProjectsService.DeleteAssignmentAsync(employeeId, projectId);
+                await _applicationService.EmployeesXProjectsService.DeleteAssignmentAsync(employeeId, projectId, userId);
                 return Ok();
             }
             catch (Exception ex)
@@ -72,7 +74,21 @@ namespace ContactsAPI.Controllers
         {
             try
             {
-                List<EmployeesXProject> assignments = (List<EmployeesXProject>)await _applicationService.EmployeesXProjectsService.GetAllAssignmentsAsync();
+                List<EmployeeProject> assignments = (List<EmployeeProject>)await _applicationService.EmployeesXProjectsService.GetAllAssignmentsAsync();
+                return Ok(assignments);
+            } catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("/api/assign-projects/user")]
+        public async Task<IActionResult> GetAllAssignmentsOfUser(int userId)
+        {
+            try
+            {
+                List<EmployeeProject> assignments = (List<EmployeeProject>)await _applicationService.EmployeesXProjectsService.GetAllAssignmentsOfUserAsync(userId);
                 return Ok(assignments);
             } catch (Exception ex)
             {

@@ -5,6 +5,7 @@ using ContactsAPI.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 using System.Web.Http;
 
 namespace ContactsAPI
@@ -46,6 +47,12 @@ namespace ContactsAPI
                 {
                     option.LoginPath = "/User/Login";
                     option.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                });
+
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
                 });
 
             var app = builder.Build();

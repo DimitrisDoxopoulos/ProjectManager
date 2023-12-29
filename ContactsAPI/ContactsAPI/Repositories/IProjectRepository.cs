@@ -8,9 +8,8 @@ namespace ContactsAPI.Repositories
         Task<bool> InsertProjectAsync(ProjectDTO request);
         Task<Project> UpdateProjectAsync(int id, ProjectUpdateDTO request);
         Task<Project> GetProjectAsync(int id);
-        Task<Project> GetProjectBySlugAsync(string slug);
-        bool DeleteProjectAsync(int id);
-        Task<IEnumerable<Project>> GetAllProjectsAsync();
-        Task<IEnumerable<Project>> GetAllProjectsOfUserAsync(int userId);
+        Task<bool> DeleteProjectAsync(int id);
+        Task<ICollection<Project>> GetAllProjectsAsync();
+        Task<ICollection<Project>> GetAllProjectsOfUserAsync(int userId);
     }
 }

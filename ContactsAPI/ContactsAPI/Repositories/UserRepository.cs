@@ -2,6 +2,7 @@
 using ContactsAPI.Models;
 using ContactsAPI.Security;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace ContactsAPI.Repositories
 {
@@ -41,10 +42,12 @@ namespace ContactsAPI.Repositories
 
         public async Task<User?> ChangePassword(PasswordUpdateDTO request)
         {
-            var user = await _context.Users.Where(x => x.Id == request.UserId).FirstAsync();
+            var user = await _context.Users.FindAsync(request.UserId);
+            if (user == null) return null;
+            if (!request.NewPassword!.Equals(request.NewPasswordConfirm) || !IsPasswordValid(request.NewPassword)) return null;
             if (!request.NewPassword!.Equals(request.NewPasswordConfirm)) return null;
             user.Password = EncryptionUtil.Encrypt(request.NewPassword);
-            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
             return user;
         }
 
@@ -61,6 +64,10 @@ namespace ContactsAPI.Repositories
             return user;
         }
 
-            
+        private bool IsPasswordValid(string password)
+        {
+            string pattern = @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W).{8,}$";
+            return !string.IsNullOrEmpty(password) && Regex.IsMatch(password, pattern);
+        }
     }
 }

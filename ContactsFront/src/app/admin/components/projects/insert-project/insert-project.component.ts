@@ -8,6 +8,7 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {AuthService} from "../../../../services/auth.service";
+import {MessagesService} from "../../../../services/messages.service";
 
 @Component({
   selector: 'app-insert-project',
@@ -19,7 +20,10 @@ import {AuthService} from "../../../../services/auth.service";
 export class InsertProjectComponent {
   insertProjectForm: FormGroup
 
-  constructor(private fb: FormBuilder, private projectService: ProjectService, private authService: AuthService) {
+  constructor(
+    private fb: FormBuilder, private projectService: ProjectService, private authService: AuthService,
+    private messagesService: MessagesService
+  ) {
     this.insertProjectForm = this.fb.group({
       title: ['', [Validators.required]],
       description: ['', [Validators.required]],
@@ -38,7 +42,12 @@ export class InsertProjectComponent {
 
     this.projectService.insertProject(project).subscribe({
       complete: () => {},
-      next: () => {},
+      next: () => {
+        this.messagesService.showSuccessMessage("Success!", 'Project inserted successfully!')
+        this.insertProjectForm.reset()
+        this.insertProjectForm.markAsUntouched()
+        this.insertProjectForm.markAsPristine()
+      },
       error: (error) => console.log(error)
     })
   }

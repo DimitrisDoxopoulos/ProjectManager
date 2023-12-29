@@ -6,6 +6,6 @@ export interface Employee {
   email: string;
   companyRole: string;
   slug: string;
-  createdAt: Date,
-  updatedAt: Date
+  createdAt: Date;
+  updatedAt: Date;
 }

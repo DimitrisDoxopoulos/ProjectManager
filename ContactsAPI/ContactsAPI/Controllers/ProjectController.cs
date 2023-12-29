@@ -42,7 +42,7 @@ namespace ContactsAPI.Controllers
         {
             try
             {
-                var project = await _applicatiionService.ProjectService.GetProject(request.Id);
+                var project = await _applicatiionService.ProjectService.GetProjectAsync(request.Id);
                 var updatedProject = await _applicatiionService.ProjectService.UpdateProjectAsync(request, project!.Id);
                 return Ok(updatedProject);
             } catch (Exception ex)
@@ -51,29 +51,29 @@ namespace ContactsAPI.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("/api/projects/{slug}")]
-        public async Task<IActionResult> GetProjectBySlugAsync(string slug)
+        [HttpPost]
+        [Route("api/projects/get-project")]
+        public async Task<IActionResult> GetProjectByIdAsync(int id)
         {
             try
             {
-                var project = await _applicatiionService.ProjectService.GetProjectBySlugAsync(slug);
+                var project = await _applicatiionService.ProjectService.GetProjectAsync(id);
                 return Ok(project);
-            } catch (Exception ex)
+            } catch(Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
 
         [HttpDelete]
-        [Route("/api/projects/{slug}")]
-        public async Task<IActionResult> DeleteProjectAsync(string slug)
+        [Route("/api/projects/{id}")]
+        public async Task<IActionResult> DeleteProjectAsync(int id)
         {
             try
             {
-                var project = await _applicatiionService.ProjectService.GetProjectBySlugAsync(slug);
+                var project = await _applicatiionService.ProjectService.GetProjectAsync(id);
                 if (project is null) return NotFound();
-                _applicatiionService.ProjectService.DeleteProject(project.Id);
+                _applicatiionService.ProjectService.DeleteProjectAsync(project.Id);
                 return Ok();
             } catch (Exception ex)
             {

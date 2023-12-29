@@ -7,10 +7,9 @@ namespace ContactsAPI.Services
     {
         Task InsertProjectAsync(ProjectDTO request);
         Task<Project> UpdateProjectAsync(ProjectUpdateDTO request, int id);
-        bool DeleteProject(int id);
-        Task<Project> GetProject(int id);
-        Task<Project> GetProjectBySlugAsync(string slug);
-        Task<IEnumerable<Project>> GetAllProjectsAsync();
-        Task<IEnumerable<Project>> GetAllProjectsOfUserAsync(int userId);
+        Task<bool> DeleteProjectAsync(int id);
+        Task<Project> GetProjectAsync(int id);
+        Task<ICollection<Project>> GetAllProjectsAsync();
+        Task<ICollection<Project>> GetAllProjectsOfUserAsync(int userId);
     }
 }

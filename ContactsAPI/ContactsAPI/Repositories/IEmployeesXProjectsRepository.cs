@@ -6,6 +6,7 @@ namespace ContactsAPI.Repositories
     {
         Task<bool> AssignProjectToEmployee(params int[] request);
         Task<bool> RemoveEmployeeFromProject(params int[] request);
-        Task<IEnumerable<EmployeesXProject>> GetAllAssignmentsAsync();
+        Task<IEnumerable<EmployeeProject>> GetAllAssignmentsOfUserAsync(int userId);
+        Task<IEnumerable<EmployeeProject>> GetAllAssignmentsAsync();
     }
 }

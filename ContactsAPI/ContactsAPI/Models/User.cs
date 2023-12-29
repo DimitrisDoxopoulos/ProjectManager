@@ -5,6 +5,8 @@ namespace ContactsAPI.Models;
 
 public partial class User : BaseModel
 {
+    public int Id { get; set; }
+
     public string Username { get; set; } = null!;
 
     public string Password { get; set; } = null!;

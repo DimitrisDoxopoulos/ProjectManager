@@ -10,23 +10,36 @@ namespace ContactsAPI.Repositories
     {
         public ProjectRepository(ContactsAppContext context) : base(context) { }
 
-        public bool DeleteProjectAsync(int id)
+        public async Task<bool> DeleteProjectAsync(int id)
         {
-            var project = _context.Projects.Where(x => x.Id == id).FirstOrDefault();
-            if (project == null) return false;
-            _context.Projects.Remove(project);
-            return true;
+            try
+            {
+                var project = await _context.Projects.FindAsync(id);
+                if (project == null)
+                {
+                    return false;
+                }
+
+                _context.Projects.Remove(project);
+                int affectedRows = await _context.SaveChangesAsync();
+
+                return affectedRows > 0;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
-        public async Task<IEnumerable<Project>> GetAllProjectsAsync()
+        public async Task<ICollection<Project>> GetAllProjectsAsync()
         {
-            List<Project> projects = await _context.Projects.ToListAsync();
+            ICollection<Project> projects = await _context.Projects.Include(e => e.Employees).ToArrayAsync();
             return projects;
         }
 
-        public async Task<IEnumerable<Project>> GetAllProjectsOfUserAsync(int userId)
+        public async Task<ICollection<Project>> GetAllProjectsOfUserAsync(int userId)
         {
-            List<Project> projects = await _context.Projects.Where(x => x.UserId == userId).ToListAsync();
+            ICollection<Project> projects = await _context.Projects.Where(x => x.UserId == userId).Include(e => e.Employees).ToArrayAsync();
             return projects;
         }
 
@@ -35,61 +48,54 @@ namespace ContactsAPI.Repositories
             return await _context.Projects.Where(x => x.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<Project> GetProjectBySlugAsync(string slug)
-        {
-            return await _context.Projects.Where(x => x.Slug == slug).FirstOrDefaultAsync();
-        }
-
         public async Task<bool> InsertProjectAsync(ProjectDTO request)
         {
-            var project = new Project()
+            try
             {
-                Title = request.Title,
-                UserId = request.UserId,
-                Description = request.Description,
-                Deadline = request.Deadline,
-                Slug = generateSlug(request.Title)
-            };
-            await _context.Projects.AddAsync(project);
-            return true;
+                var project = new Project()
+                {
+                    Title = request.Title,
+                    UserId = request.UserId,
+                    Description = request.Description,
+                    Deadline = request.Deadline,
+                };
+
+                await _context.Projects.AddAsync(project);
+                int affectedRows = await _context.SaveChangesAsync();
+
+                return affectedRows > 0; // Return true if the project was successfully inserted
+            }
+            catch (DbUpdateException)
+            {
+                // Handle database update errors if necessary
+                return false;
+            }
         }
 
         public async Task<Project?> UpdateProjectAsync(int id, ProjectUpdateDTO request)
         {
-            var project = await _context.Projects.Where(x => x.Id == id).FirstOrDefaultAsync();
+            var project = await _context.Projects.FindAsync(id);
             if (project is null) return null;
 
             project.Title = request.Title;
             project.UserId = request.UserId;
             project.Description = request.Description;
             project.Deadline = request.Deadline;
-            project.Slug = generateSlug(request.Title);
 
-            _context.Projects.Update(project);
-            return project;
-        }
-
-        public string generateSlug(string input)
-        {
-            string lowercased = input.ToLowerInvariant();
-            StringBuilder slugBuilder = new StringBuilder();
-
-            foreach (char c in lowercased)
+            try
             {
-                if (char.IsLetterOrDigit(c) || c == '-')
-                {
-                    slugBuilder.Append(c);
-                } else if (c == ' ')
-                {
-                    slugBuilder.Append('-');
-                }
+                _context.Projects.Update(project);
+                int affectedRows = await _context.SaveChangesAsync();
+
+                return affectedRows > 0 ? project : null;
             }
-
-            using (SHA256 sha256 = SHA256.Create())
+            catch (DbUpdateConcurrencyException)
             {
-                byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(slugBuilder.ToString()));
-                string hashedSlug = BitConverter.ToString(hashBytes, 0, 4).Replace("-", "").ToLowerInvariant();
-                return hashedSlug;
+                return null;
+            }
+            catch (DbUpdateException)
+            {
+                return null;
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ContactsAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ContactsAPI.Models;
@@ -17,12 +18,11 @@ public partial class ContactsAppContext : DbContext
 
     public virtual DbSet<Employee> Employees { get; set; }
 
-    public virtual DbSet<EmployeesXProject> EmployeesXProjects { get; set; }
+    public virtual DbSet<EmployeeProject> EmployeeProjects { get; set; }
 
     public virtual DbSet<Project> Projects { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
-
 
     public override int SaveChanges()
     {
@@ -33,7 +33,9 @@ public partial class ContactsAppContext : DbContext
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         AddTimeStamps();
-        return await base.SaveChangesAsync();
+        var result = await base.SaveChangesAsync();
+        Console.WriteLine($"Saved {result} changes to the database.");
+        return result;
     }
 
     private void AddTimeStamps()
@@ -50,7 +52,6 @@ public partial class ContactsAppContext : DbContext
             ((BaseModel)entity.Entity).UpdatedAt = now;
         }
     }
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -76,9 +77,6 @@ public partial class ContactsAppContext : DbContext
             entity.Property(e => e.Lastname)
                 .HasMaxLength(255)
                 .HasColumnName("LASTNAME");
-            entity.Property(e => e.Slug)
-                .HasMaxLength(50)
-                .HasColumnName("SLUG");
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("UPDATED_AT");
@@ -88,26 +86,43 @@ public partial class ContactsAppContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__EMPLOYEES__USER___60A75C0F");
+
+            entity.HasMany(e => e.Projects)
+                .WithMany(p => p.Employees)
+                .UsingEntity<EmployeeProject>(j => j.ToTable("EMPLOYEES_X_PROJECTS"));
         });
 
-        modelBuilder.Entity<EmployeesXProject>(entity =>
+        modelBuilder.Entity<EmployeeProject>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("EMPLOYEES_X_PROJECTS");
+            entity.HasKey(ep => new { ep.EmployeeId, ep.ProjectId });
+            entity.ToTable("EMPLOYEES_X_PROJECTS");
 
-            entity.Property(e => e.EmployeeId).HasColumnName("EMPLOYEE_ID");
             entity.Property(e => e.ProjectId).HasColumnName("PROJECT_ID");
+            entity.Property(e => e.EmployeeId).HasColumnName("EMPLOYEE_ID");
+            entity.Property(e => e.UserId).HasColumnName("USER_ID");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("CREATED_AT");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("UPDATED_AT");
 
-            entity.HasOne(d => d.Employee).WithMany()
-                .HasForeignKey(d => d.EmployeeId)
+            entity.HasOne(ep => ep.Employee)
+                .WithMany(e => e.EmployeeProjects)
+                .HasForeignKey(ep => ep.EmployeeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__EMPLOYEES__EMPLO__6754599E");
 
-            entity.HasOne(d => d.Project).WithMany()
-                .HasForeignKey(d => d.ProjectId)
+            entity.HasOne(ep => ep.Project)
+                .WithMany(p => p.EmployeeProjects)
+                .HasForeignKey(ep => ep.ProjectId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__EMPLOYEES__PROJE__68487DD7");
+
+            entity.HasOne(d => d.User).WithMany()
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__EMPLOYEES__USER___6E01572D");
         });
 
         modelBuilder.Entity<Project>(entity =>
@@ -126,9 +141,6 @@ public partial class ContactsAppContext : DbContext
             entity.Property(e => e.Description)
                 .HasColumnType("text")
                 .HasColumnName("DESCRIPTION");
-            entity.Property(e => e.Slug)
-                .HasMaxLength(50)
-                .HasColumnName("SLUG");
             entity.Property(e => e.Title)
                 .HasMaxLength(50)
                 .HasColumnName("TITLE");
@@ -141,6 +153,11 @@ public partial class ContactsAppContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__PROJECTS__USER_I__6477ECF3");
+
+            entity.HasMany(e => e.Employees)
+                .WithMany(p => p.Projects)
+                .UsingEntity<EmployeeProject>(j => j.ToTable("EMPLOYEES_X_PROJECTS"));
+
         });
 
         modelBuilder.Entity<User>(entity =>

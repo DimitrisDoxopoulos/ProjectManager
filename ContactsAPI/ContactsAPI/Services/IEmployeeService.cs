@@ -10,7 +10,7 @@ namespace ContactsAPI.Services
         bool DeleteEmployee(int id);
         Task<Employee> GetEmployeeByIdAsync(int id);
         Task<Employee> GetEmployeeByEmailAsync(string email);
-        Task<Employee> GetEmployeeBySlugAsync(string slug);
-        Task<IEnumerable<Employee>> GetAllEmployeesAsync();
+        Task<ICollection<Employee>> GetAllEmployeesAsync();
+        Task<ICollection<Employee>> GetAllEmployeesOfUserAsync(int userId);
     }
 }

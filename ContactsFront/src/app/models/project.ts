@@ -1,3 +1,5 @@
+import {Employee} from "./employee";
+
 export interface Project {
   id: number;
   title: string;
@@ -6,4 +8,5 @@ export interface Project {
   slug: string;
   createdAt: Date;
   updatedAt: Date;
+  employees: Employee[]
 }

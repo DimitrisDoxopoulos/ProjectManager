@@ -25,9 +25,15 @@ namespace ContactsAPI.Services
             return true;
         }
 
-        public async Task<IEnumerable<Employee>> GetAllEmployeesAsync()
+        public async Task<ICollection<Employee>> GetAllEmployeesAsync()
         {
-            List<Employee> employees = (List<Employee>)await _unitOfWork.EmployeeRepository.GetAllEmployeesAsync();
+            ICollection<Employee> employees = await _unitOfWork.EmployeeRepository.GetAllEmployeesAsync();
+            return employees;
+        }
+
+        public async Task<ICollection<Employee>> GetAllEmployeesOfUserAsync(int userId)
+        {
+            ICollection<Employee> employees = await _unitOfWork.EmployeeRepository.GetAllEmployeesOfUserAsync(userId);
             return employees;
         }
 
@@ -45,13 +51,6 @@ namespace ContactsAPI.Services
             return employee;
         }
 
-        public async Task<Employee> GetEmployeeBySlugAsync(string slug)
-        {
-            var employee = await _unitOfWork.EmployeeRepository.GetEmployeeBySlugAsync(slug);
-            if (employee is null) throw new ApplicationException("Employee with slug " + slug + " does not exist");
-            return employee;
-        }
-
         public async Task InsertEmployeeAsync(EmployeeDTO request)
         {
             if (await _unitOfWork.EmployeeRepository.GetEmployeeByEmailAsync(request.Email!) is not null)
@@ -65,5 +64,6 @@ namespace ContactsAPI.Services
             await _unitOfWork.SaveAsync();
             return employee;
         }
+
     }
 }

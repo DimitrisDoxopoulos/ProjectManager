@@ -7,6 +7,7 @@ import {MatCardModule} from "@angular/material/card";
 import {MatDialog} from "@angular/material/dialog";
 import {CreateEmployeeComponent} from "./create-employee/create-employee.component";
 import {EditEmployeeComponent} from "./edit-employee/edit-employee.component";
+import {MessagesService} from "../../../services/messages.service";
 
 @Component({
   selector: 'app-employees',
@@ -20,7 +21,9 @@ export class EmployeesComponent implements OnInit {
   displayColumns: string[] = [];
   dataSource: MatTableDataSource<Employee> = new MatTableDataSource<Employee>();
 
-  constructor(private employeeService: EmployeeService, public dialog: MatDialog) {
+  constructor(
+    private employeeService: EmployeeService, public dialog: MatDialog, private messagesService: MessagesService
+  ) {
 
   }
 
@@ -46,13 +49,32 @@ export class EmployeesComponent implements OnInit {
       width: '800px',
       autoFocus: false
     })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        window.location.reload()
+      }
+    })
   }
+
+
 
   openEditModal(employee: Employee) {
     const dialogRef = this.dialog.open(EditEmployeeComponent, {
       data: employee,
       width: '800px',
       autoFocus: false
+    })
+
+    const sub = dialogRef.componentInstance.isUpdated.subscribe((data) => {
+      if (!data) {
+        dialogRef.close()
+        return
+      }
+
+      this.messagesService.showSuccessMessage('Success!', 'The employee was successfully updated!')
+      dialogRef.close()
+      window.location.reload()
     })
   }
 

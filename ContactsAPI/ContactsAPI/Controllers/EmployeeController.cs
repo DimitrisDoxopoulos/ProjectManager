@@ -53,12 +53,12 @@ namespace ContactsAPI.Controllers
         }
 
         [HttpDelete]
-        [Route("/api/employees/{slug}")]
-        public async Task<IActionResult> DeleteEmployeeAsync(string slug)
+        [Route("/api/employees/{email}")]
+        public async Task<IActionResult> DeleteEmployeeAsync(string email)
         {
             try
             {
-                var employee = await _applicatiionService.EmployeeService.GetEmployeeBySlugAsync(slug);
+                var employee = await _applicatiionService.EmployeeService.GetEmployeeByEmailAsync(email);
                 if (employee is null) return NotFound();
                 _applicatiionService.EmployeeService.DeleteEmployee(employee.Id);
                 return Ok();
@@ -68,15 +68,13 @@ namespace ContactsAPI.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("/api/employees/{slug}")]
-        public async Task<IActionResult> GetEmployeeBySlugAsync(string slug)
+        [HttpPost]
+        [Route("/api/employees/get-employee")]
+        public async Task<IActionResult> GetEmployeeById(int id)
         {
             try
             {
-                if (slug is null) return NotFound();
-                var employee = await _applicatiionService.EmployeeService.GetEmployeeBySlugAsync(slug);
-                if (employee is null) return NotFound();
+                var employee = await _applicatiionService.EmployeeService.GetEmployeeByIdAsync(id);
                 return Ok(employee);
             } catch(Exception ex)
             {
@@ -91,6 +89,20 @@ namespace ContactsAPI.Controllers
             try
             {
                 var employees = await _applicatiionService.EmployeeService.GetAllEmployeesAsync();
+                return Ok(employees);
+            } catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("/api/employees/of-user")]
+        public async Task<IActionResult> GetAllEmployeesOfUserAsync(int userId)
+        {
+            try
+            {
+                var employees = await _applicatiionService.EmployeeService.GetAllEmployeesOfUserAsync(userId);
                 return Ok(employees);
             } catch (Exception ex)
             {

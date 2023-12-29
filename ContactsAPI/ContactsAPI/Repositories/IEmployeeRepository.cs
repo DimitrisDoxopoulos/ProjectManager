@@ -10,8 +10,8 @@ namespace ContactsAPI.Repositories
         Task<Employee> GetEmployeeById(int id);
         Task<Employee> GetEmployeeByEmailAsync(string email);
         Task<Employee> UpdateEmployeeAsync(int id, EmployeeUpdateDTO request);
-        Task<Employee> GetEmployeeBySlugAsync(string slug);
-        bool DeleteEmployee(int id);
-        Task<IEnumerable<Employee>> GetAllEmployeesAsync();
+        Task<bool> DeleteEmployee(int id);
+        Task<ICollection<Employee>> GetAllEmployeesAsync();
+        Task<ICollection<Employee>> GetAllEmployeesOfUserAsync(int userId);
     }
 }
